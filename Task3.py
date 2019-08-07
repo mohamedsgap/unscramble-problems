@@ -43,3 +43,40 @@ Print the answer as a part of a message::
 to other fixed lines in Bangalore."
 The percentage should have 2 decimal digits
 """
+
+
+
+both_fixed_bgl = 0 # the count of fixed phone numbers from both calling and answering of Bangalore
+from_bgl = 0 # the count of fixed phone numbers calling from Bangalore
+phone_list = set() # store phone numbers called by people in Bangalore
+
+for record in calls:
+    if record[0].find("(080)") != -1 and record[1].find("(080)") != -1:
+        both_fixed_bgl += 1
+        from_bgl += 1
+        phone_list.add(record[1])
+    elif record[0].find("(080)") != -1 and record[1].find(")") != -1:
+        from_bgl += 1
+        phone_list.add(record[1])
+    elif record[0].find("(080)") != -1 and (record[1][0] == "7" or record[1][0] == "8" or record[1][0] == "9"):
+        from_bgl += 1
+        phone_list.add(record[1])
+
+print("The numbers called by people in Bangalore have codes:")
+
+codes = set() # store special codes from area codes and mobile phone numbers
+
+for phone in phone_list:
+    if phone.find(")") != -1: # locate area code length
+        place = phone.find(")")
+        codes.add(phone[:place+1])
+    else:
+        codes.add(phone[:4]) # first four digits from mobile phone numbers
+
+for code in sorted(codes):
+    print(code)
+
+perc = round((both_fixed_bgl / from_bgl * 100), 2) # keep only 2 decimal digits
+print("{} percent of calls from fixed lines in Bangalore are calls to other fixed lines in Bangalore.".format(str(perc)))
+
+    
